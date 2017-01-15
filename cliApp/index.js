@@ -1,5 +1,6 @@
 const DataStore = require('nedb')
 const inquirer = require('inquirer')
+const colors = require('colors')
 
 const state = {
   gameIsOn: true,
@@ -51,7 +52,6 @@ const promptUser = (q) => {
 }
 
 const processUserAnswer = (q, correctAnswer, userAnswer) => {
-  console.log(correctAnswer + ' vs. ' + userAnswer)
   if (correctAnswer === userAnswer) {
     doOnCorrectAnswer(q)
   } else {
@@ -62,14 +62,15 @@ const processUserAnswer = (q, correctAnswer, userAnswer) => {
 const doOnCorrectAnswer = (q) => {
   state.player.points++
   state.player.correctAnswers++
-  console.log('Correct!')
+  console.log('Correct!'.bgGreen)
   doRound()
 }
 
 const doOnIncorrectAnswer = (q) => {
   state.player.points--
   state.player.incorrectAnswers++
-  console.log('Wrong! The correct answer would\'ve been "' + q.answers.correctAnswer + '"')
+  const msg = 'Wrong! The correct answer would\'ve been "' + q.answers.correctAnswer + '"'
+  console.log(msg.red.bold)
   doRound()
 }
 
