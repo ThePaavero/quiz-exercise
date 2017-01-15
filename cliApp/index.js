@@ -46,8 +46,25 @@ const promptUser = (q) => {
     message: q.question,
     choices: formatChoices(q.answers)
   }).then(function (answer) {
-    console.log(answer)
+    processUserAnswer(q.answers.correctAnswer, answer.userAnswer)
   })
+}
+
+const processUserAnswer = (correctAnswer, userAnswer) => {
+  console.log(correctAnswer + ' vs. ' + userAnswer)
+  if (correctAnswer === userAnswer) {
+    doOnCorrectAnswer()
+  } else {
+    doOnIncorrectAnswer()
+  }
+}
+
+const doOnCorrectAnswer = () => {
+  console.log('RIGHT!')
+}
+
+const doOnIncorrectAnswer = () => {
+  console.log('WRONG!')
 }
 
 const formatChoices = (q) => {
