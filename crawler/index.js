@@ -2,13 +2,13 @@ const md5Hex = require('md5-hex')
 const axios = require('axios')
 const Datastore = require('nedb')
 
-const store = new Datastore({
+const db = new Datastore({
   filename: '../data',
   autoload: true
 })
 const apiUrl = 'https://opentdb.com/api.php?amount=1500&type=multiple'
 let runCount = 0
-const runsToMake = 1
+const runsToMake = 10
 
 const run = () => {
   runApiCall()
@@ -19,16 +19,32 @@ const getHashOfQuestion = (questionString) => {
 }
 
 const runApiCall = () => {
+  console.log('Running API call...')
   axios.get(apiUrl).then((response) => {
     const questionsArray = response.data
     questionsArray.results.forEach((q) => {
+      if (questionExists(q)) {
+        console.log('Duplicate found, skipping')
+        return
+      }
+      console.log('Saving...')
       saveQuestion(q).then(() => {
         runCount++
+        console.log('Saved.')
         if (runCount < runsToMake) {
-          runApiCall()
+          console.log('Running new API call in 1 second...')
+          setTimeout(runApiCall, 1000)
         }
       })
     })
+  })
+}
+
+const questionExists = (q) => {
+  db.find({
+    md5: q.md5
+  }, (err, docs) => {
+    return !!docs
   })
 }
 
@@ -46,7 +62,7 @@ const saveQuestion = (data) => {
     answers
   }
   return new Promise((resolve) => {
-    store.insert(row, (err, newDocument) => {
+    db.insert(row, (err, newDocument) => {
       resolve(newDocument)
     })
   })
