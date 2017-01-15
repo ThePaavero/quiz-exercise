@@ -4,7 +4,8 @@ const inquirer = require('inquirer');
 const state = {
   gameIsOn: true,
   secondsPlayed: 0,
-  questionsAnswered: 0,
+  questionsAnsweredCount: 0,
+  questionsAnsweredHashArray: [],
   player: {
     points: 0,
     correctAnswers: 0,
@@ -23,6 +24,10 @@ const getRandomQuestion = () => {
   return new Promise((resolve) => {
     const index = Math.random() * amountOfQuestions
     db.findOne({}).skip(index).exec((err, doc) => {
+      if (state.questionsAnsweredHashArray.indexOf(doc.md5) > -1) {
+        return getRandomQuestion()
+      }
+      state.questionsAnsweredHashArray.push(doc.md5)
       resolve(doc)
     })
   })
