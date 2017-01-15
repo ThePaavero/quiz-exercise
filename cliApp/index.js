@@ -1,5 +1,5 @@
-const Datastore = require('nedb')
-const inquirer = require('inquirer');
+const DataStore = require('nedb')
+const inquirer = require('inquirer')
 
 const state = {
   gameIsOn: true,
@@ -15,7 +15,7 @@ const state = {
 
 let amountOfQuestions = 0
 
-const db = new Datastore({
+const db = new DataStore({
   filename: '../data',
   autoload: true
 })
@@ -35,15 +35,32 @@ const getRandomQuestion = () => {
 
 const doRound = () => {
   getRandomQuestion().then((q) => {
-    console.log(q)
+    promptUser(q)
   })
+}
+
+const promptUser = (q) => {
+  inquirer.prompt({
+    type: 'list',
+    name: 'userAnswer',
+    message: q.question,
+    choices: formatChoices(q.answers)
+  }).then(function (answer) {
+    console.log(answer)
+  })
+}
+
+const formatChoices = (q) => {
+  const choices = q.incorrectAnswers
+  choices.push(q.correctAnswer)
+  return choices
 }
 
 const countDocumentAmount = () => {
   return new Promise((resolve) => {
     amountOfQuestions = db.count({}, (err, count) => {
       resolve(count)
-    });
+    })
   })
 }
 
