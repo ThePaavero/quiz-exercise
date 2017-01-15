@@ -9,7 +9,7 @@ const state = {
   player: {
     points: 0,
     correctAnswers: 0,
-    falseAnswers: 0
+    incorrectAnswers: 0
   }
 }
 
@@ -46,25 +46,31 @@ const promptUser = (q) => {
     message: q.question,
     choices: formatChoices(q.answers)
   }).then(function (answer) {
-    processUserAnswer(q.answers.correctAnswer, answer.userAnswer)
+    processUserAnswer(q, q.answers.correctAnswer, answer.userAnswer)
   })
 }
 
-const processUserAnswer = (correctAnswer, userAnswer) => {
+const processUserAnswer = (q, correctAnswer, userAnswer) => {
   console.log(correctAnswer + ' vs. ' + userAnswer)
   if (correctAnswer === userAnswer) {
-    doOnCorrectAnswer()
+    doOnCorrectAnswer(q)
   } else {
-    doOnIncorrectAnswer()
+    doOnIncorrectAnswer(q)
   }
 }
 
-const doOnCorrectAnswer = () => {
-  console.log('RIGHT!')
+const doOnCorrectAnswer = (q) => {
+  state.player.points++
+  state.player.correctAnswers++
+  console.log('Correct!')
+  doRound()
 }
 
-const doOnIncorrectAnswer = () => {
-  console.log('WRONG!')
+const doOnIncorrectAnswer = (q) => {
+  state.player.points--
+  state.player.incorrectAnswers++
+  console.log('Wrong! The correct answer would\'ve been "' + q.answers.correctAnswer + '"')
+  doRound()
 }
 
 const formatChoices = (q) => {
