@@ -1,41 +1,83 @@
 <template>
   <div id='app'>
     <h1>Quiz</h1>
-    <div v-if='this.$store.activeQuestion'></div>
+    <Question v-if='haveActiveQuestion()' :question='this.getActiveQuestion()' :onAnswer='this.onUserAnswer'/>
+    <div v-else>Loading...</div>
   </div>
 </template>
 
 <script>
-  import ExampleComponent from './components/ExampleComponent.vue'
+  import Question from './components/Question.vue'
   import axios from 'axios'
 
   const apiUrl = 'http://localhost:666/get-random-question'
 
   const getQuestion = () => {
     return new Promise((resolve, reject) => {
-      axios.get(apiUrl).then((data) => {
-        resolve(data.data)
+      axios.get(apiUrl).then((response) => {
+        resolve(response.data)
       }).catch((err) => {
         reject(err)
       })
     })
   }
 
+  const formatChoices = (q) => {
+    const choices = q.incorrectAnswers
+    choices.push(q.correctAnswer)
+    return shuffleArray(choices)
+  }
+
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      const temp = array[i]
+      array[i] = array[j]
+      array[j] = temp
+    }
+    return array
+  }
+
   export default {
     name: 'app',
     components: {
-      ExampleComponent
+      Question
     },
     mounted() {
       this.$router.push('/')
-      getQuestion().then((q) => {
-        console.log(q)
-        this.$store.commit('setActiveQuestion', q)
-      })
+      this.doRound()
     },
     methods: {
-      goHome() {
-        this.$router.push('/')
+      doRound() {
+        getQuestion().then((q) => {
+          q.correctAnswer = q.answers.correctAnswer
+          q.answers = formatChoices(q.answers)
+          this.$store.commit('setActiveQuestion', q)
+        })
+      },
+      haveActiveQuestion() {
+        return this.$store.state.activeQuestion
+      },
+      getActiveQuestion() {
+        return this.$store.state.activeQuestion
+      },
+      onUserAnswer(userAnswer) {
+        if (this.validateUserAnswer(userAnswer)) {
+          this.doOnCorrectAnswer()
+        } else {
+          this.doOnIncorrectAnswer()
+        }
+      },
+      validateUserAnswer(userAnswer) {
+        return userAnswer === this.$store.state.activeQuestion.correctAnswer
+      },
+      doOnCorrectAnswer() {
+        console.log('Correct!')
+        this.doRound()
+      },
+      doOnIncorrectAnswer() {
+        console.log('Incorrect...')
+        this.doRound()
       }
     }
   }
