@@ -1,12 +1,25 @@
 <template>
   <div id='app'>
-    <h1>Hello World!</h1>
-    <ExampleComponent/>
+    <h1>Quiz</h1>
+    <div v-if='this.$store.activeQuestion'></div>
   </div>
 </template>
 
 <script>
   import ExampleComponent from './components/ExampleComponent.vue'
+  import axios from 'axios'
+
+  const apiUrl = 'http://localhost:666/get-random-question'
+
+  const getQuestion = () => {
+    return new Promise((resolve, reject) => {
+      axios.get(apiUrl).then((data) => {
+        resolve(data.data)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
+  }
 
   export default {
     name: 'app',
@@ -15,6 +28,10 @@
     },
     mounted() {
       this.$router.push('/')
+      getQuestion().then((q) => {
+        console.log(q)
+        this.$store.commit('setActiveQuestion', q)
+      })
     },
     methods: {
       goHome() {

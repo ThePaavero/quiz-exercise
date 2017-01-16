@@ -4,12 +4,12 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const state = {
-  something: null
+  activeQuestion: null
 }
 
 const mutations = {
-  setSomething(state, something) {
-    state.something = something
+  setActiveQuestion(state, q) {
+    state.activeQuestion = q
   }
 }
 

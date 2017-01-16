@@ -20,11 +20,6 @@ const init = () => {
     })
   })
 }
-app.get('/get-random-question', function (req, res) {
-  getRandomQuestion().then((q) => {
-    res.send(q)
-  })
-})
 
 const getRandomQuestion = () => {
   return new Promise((resolve) => {
@@ -46,5 +41,11 @@ const countDocumentAmount = () => {
     })
   })
 }
+
+app.get('/get-random-question', function (req, res) {
+  getRandomQuestion().then((q) => {
+    res.send(q)
+  })
+})
 
 init()
