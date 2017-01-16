@@ -1,6 +1,7 @@
 <template>
   <div id='app'>
     <h1>Quiz</h1>
+    <StatsDisplay/>
     <Question v-if='haveActiveQuestion()' :question='this.getActiveQuestion()' :onAnswer='this.onUserAnswer'/>
     <div v-else>Loading...</div>
   </div>
@@ -8,6 +9,7 @@
 
 <script>
   import Question from './components/Question.vue'
+  import StatsDisplay from './components/StatsDisplay.vue'
   import axios from 'axios'
 
   const apiUrl = 'http://localhost:666/get-random-question'
@@ -22,26 +24,11 @@
     })
   }
 
-  const formatChoices = (q) => {
-    const choices = q.incorrectAnswers
-    choices.push(q.correctAnswer)
-    return shuffleArray(choices)
-  }
-
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      const temp = array[i]
-      array[i] = array[j]
-      array[j] = temp
-    }
-    return array
-  }
-
   export default {
     name: 'app',
     components: {
-      Question
+      Question,
+      StatsDisplay
     },
     mounted() {
       this.$router.push('/')
@@ -50,8 +37,6 @@
     methods: {
       doRound() {
         getQuestion().then((q) => {
-          q.correctAnswer = q.answers.correctAnswer
-          q.answers = formatChoices(q.answers)
           this.$store.commit('setActiveQuestion', q)
         })
       },
@@ -73,10 +58,14 @@
       },
       doOnCorrectAnswer() {
         console.log('Correct!')
+        this.$store.commit('addPoints', 1)
+        this.$store.commit('addCorrectAnswer')
         this.doRound()
       },
       doOnIncorrectAnswer() {
         console.log('Incorrect...')
+//        this.$store.commit('addPoints', -1)
+        this.$store.commit('addIncorrectAnswer')
         this.doRound()
       }
     }
