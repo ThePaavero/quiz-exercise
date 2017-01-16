@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const DataStore = require('nedb')
 
-const questionsAnsweredHashArray = []
 let amountOfQuestions = 0
 
 const db = new DataStore({
@@ -45,10 +44,6 @@ const getRandomQuestion = () => {
   return new Promise((resolve) => {
     const index = Math.random() * amountOfQuestions
     db.findOne({}).skip(index).exec((err, doc) => {
-      if (questionsAnsweredHashArray.indexOf(doc.md5) > -1) {
-        return getRandomQuestion()
-      }
-      questionsAnsweredHashArray.push(doc.md5)
       resolve(doc)
     })
   })
