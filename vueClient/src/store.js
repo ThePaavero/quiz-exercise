@@ -9,10 +9,11 @@ const getInitialState = () => {
     gameIsOn: true,
     activeQuestion: null,
     points: 0,
+    roundsPlayed: 0,
     correctAnsweredCount: 0,
     incorrectAnsweredCount: 0,
     amountOfIncorrectAnswersBeforeGameOver: 5,
-    secondsToAnswer: 10
+    secondsToAnswer: 30
   }
 }
 
@@ -44,7 +45,10 @@ const mutations = {
   },
   resetState(state) {
     Object.assign(state, getInitialState())
-  }
+  },
+  adjustSecondsToAnswer(state) {
+    state.secondsToAnswer -= state.correctAnsweredCount
+  },
 }
 
 export default new Vuex.Store({

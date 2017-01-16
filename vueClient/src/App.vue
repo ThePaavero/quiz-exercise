@@ -61,6 +61,8 @@
         return this.$store.state.activeQuestion
       },
       onUserAnswer(userAnswer) {
+        this.$store.state.roundsPlayed++
+        this.adjustSecondsToAnswer()
         if (this.validateUserAnswer(userAnswer)) {
           this.resetActiveQuestion()
           this.doOnCorrectAnswer()
@@ -68,6 +70,9 @@
           this.resetActiveQuestion()
           this.doOnIncorrectAnswer()
         }
+      },
+      adjustSecondsToAnswer() {
+        this.$store.commit('adjustSecondsToAnswer')
       },
       resetActiveQuestion() {
         this.$store.commit('removeActiveQuestion')
