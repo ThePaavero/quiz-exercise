@@ -91,7 +91,7 @@
         this.flashBodyClass('incorrect')
         console.log('Incorrect...')
         this.$store.commit('addIncorrectAnswer')
-        if (this.$store.state.incorrectAnsweredCount > this.$store.state.amountOfIncorrectAnswersBeforeGameOver) {
+        if (this.$store.state.incorrectAnsweredCount >= this.$store.state.amountOfIncorrectAnswersBeforeGameOver) {
           this.doGameOver('You ran out of incorrect answers!')
         } else {
           this.doRound()
