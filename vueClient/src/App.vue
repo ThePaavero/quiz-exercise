@@ -22,9 +22,10 @@
 <script>
   import Question from './components/Question.vue'
   import StatsDisplay from './components/StatsDisplay.vue'
+  import Helpers from './Helpers'
   import axios from 'axios'
 
-  const apiUrl = 'http://localhost:666/get-random-question'
+  const apiUrl = 'http://paavero.com:666/get-random-question'
 
   const getQuestion = () => {
     return new Promise((resolve, reject) => {
@@ -64,12 +65,11 @@
         this.$store.state.roundsPlayed++
         this.adjustSecondsToAnswer()
         if (this.validateUserAnswer(userAnswer)) {
-          this.resetActiveQuestion()
           this.doOnCorrectAnswer()
         } else {
-          this.resetActiveQuestion()
           this.doOnIncorrectAnswer()
         }
+        this.resetActiveQuestion()
       },
       adjustSecondsToAnswer() {
         this.$store.commit('adjustSecondsToAnswer')
@@ -81,12 +81,14 @@
         return userAnswer === this.$store.state.activeQuestion.correctAnswer
       },
       doOnCorrectAnswer() {
+        this.FlashBodyClass('correct')
         console.log('Correct!')
         this.$store.commit('addPoints', 1)
         this.$store.commit('addCorrectAnswer')
         this.doRound()
       },
       doOnIncorrectAnswer() {
+        this.FlashBodyClass('incorrect')
         console.log('Incorrect...')
         this.$store.commit('addIncorrectAnswer')
         if (this.$store.state.incorrectAnsweredCount > this.$store.state.amountOfIncorrectAnswersBeforeGameOver) {
@@ -94,6 +96,12 @@
         } else {
           this.doRound()
         }
+      },
+      FlashBodyClass(className) {
+        document.body.classList.add(className)
+        setTimeout(() => {
+          document.body.classList.remove(className)
+        }, 300)
       },
       doGameOver(msg) {
         this.$store.commit('gameOver', msg)
@@ -124,6 +132,15 @@
 
     @media screen and (max-width: 800px) {
       font-size: 16px;
+    }
+  }
+
+  body {
+    &.correct {
+      background-color: greenyellow;
+    }
+    &.incorrect {
+      background-color: orangered;
     }
   }
 
