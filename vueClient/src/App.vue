@@ -54,10 +54,15 @@
       },
       onUserAnswer(userAnswer) {
         if (this.validateUserAnswer(userAnswer)) {
+          this.resetActiveQuestion()
           this.doOnCorrectAnswer()
         } else {
+          this.resetActiveQuestion()
           this.doOnIncorrectAnswer()
         }
+      },
+      resetActiveQuestion() {
+        this.$store.commit('removeActiveQuestion')
       },
       validateUserAnswer(userAnswer) {
         return userAnswer === this.$store.state.activeQuestion.correctAnswer

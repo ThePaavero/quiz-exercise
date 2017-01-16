@@ -14,6 +14,9 @@
     data() {
       return {}
     },
+    mounted() {
+      console.log('Question was mounted')
+    },
     methods: {
       userAnswers(answer) {
         this.onAnswer(answer)

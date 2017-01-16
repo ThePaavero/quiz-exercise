@@ -11,7 +11,8 @@ const getInitialState = () => {
     points: 0,
     correctAnsweredCount: 0,
     incorrectAnsweredCount: 0,
-    amountOfIncorrectAnswersBeforeGameOver: 5
+    amountOfIncorrectAnswersBeforeGameOver: 5,
+    secondsToAnswer: 10
   }
 }
 
@@ -35,6 +36,9 @@ const mutations = {
   },
   gameOver(state, msg) {
     state.gameIsOn = false
+  },
+  removeActiveQuestion(state) {
+    state.activeQuestion = null
   },
   resetState(state) {
     Object.assign(state, getInitialState())
