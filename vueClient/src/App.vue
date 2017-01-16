@@ -15,6 +15,7 @@
       <h2>Game over!</h2>
       <a href="#" @click.prevent='resetGame'>Play again?</a>
     </div>
+    <a href="#" @click.prevent='resetGame'>Clear session</a>
   </div>
 </template>
 
@@ -49,6 +50,8 @@
       doRound() {
         getQuestion().then((q) => {
           this.$store.commit('setActiveQuestion', q)
+        }).catch((err) => {
+          window.alert(err)
         })
       },
       haveActiveQuestion() {
