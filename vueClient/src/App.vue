@@ -3,7 +3,12 @@
     <h1>Quiz</h1>
     <div v-if='this.$store.state.gameIsOn'>
       <StatsDisplay/>
-      <Question v-if='haveActiveQuestion()' :question='this.getActiveQuestion()' :onAnswer='this.onUserAnswer'/>
+      <Question
+        v-if='haveActiveQuestion()'
+        :question='this.getActiveQuestion()'
+        :secondsToAnswer='this.$store.state.secondsToAnswer'
+        :doOnTimeOut='this.onQuestionTimeOut'
+        :onAnswer='this.onUserAnswer'/>
       <div v-else>Loading...</div>
     </div>
     <div v-else>
@@ -89,6 +94,10 @@
         console.log('Reset game!')
         this.$store.commit('resetState')
         this.doRound()
+      },
+      onQuestionTimeOut() {
+        console.log('Question timed out!')
+        this.doOnIncorrectAnswer()
       }
     }
   }

@@ -30,9 +30,11 @@ const mutations = {
   },
   addIncorrectAnswer(state) {
     state.incorrectAnsweredCount++
+    state.activeQuestion = null
   },
   addCorrectAnswer(state) {
     state.correctAnsweredCount++
+    state.activeQuestion = null
   },
   gameOver(state, msg) {
     state.gameIsOn = false
