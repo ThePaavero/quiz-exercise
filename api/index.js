@@ -43,7 +43,9 @@ const countDocumentAmount = () => {
 }
 
 app.get('/get-random-question', function (req, res) {
+  console.log('Getting random question...')
   getRandomQuestion().then((q) => {
+    console.log('Sent!')
     res.send(q)
   })
 })

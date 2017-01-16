@@ -3,13 +3,18 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-const state = {
-  activeQuestion: null,
-  points: 0,
-  correctAnsweredCount: 0,
-  incorrectAnsweredCount: 0,
-  amountOfIncorrectAnswersBeforeGameOver: 5
+const getInitialState = () => {
+  return {
+    gameIsOn: true,
+    activeQuestion: null,
+    points: 0,
+    correctAnsweredCount: 0,
+    incorrectAnsweredCount: 0,
+    amountOfIncorrectAnswersBeforeGameOver: 5
+  }
 }
+
+const state = getInitialState()
 
 const formatChoices = (q) => {
   const choices = q.incorrectAnswers
@@ -41,6 +46,12 @@ const mutations = {
   },
   addCorrectAnswer(state) {
     state.correctAnsweredCount++
+  },
+  gameOver(state, msg) {
+    state.gameIsOn = false
+  },
+  resetState(state) {
+    Object.assign(state, getInitialState())
   }
 }
 

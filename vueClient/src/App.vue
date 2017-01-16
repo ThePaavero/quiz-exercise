@@ -1,9 +1,15 @@
 <template>
   <div id='app'>
     <h1>Quiz</h1>
-    <StatsDisplay/>
-    <Question v-if='haveActiveQuestion()' :question='this.getActiveQuestion()' :onAnswer='this.onUserAnswer'/>
-    <div v-else>Loading...</div>
+    <div v-if='this.$store.state.gameIsOn'>
+      <StatsDisplay/>
+      <Question v-if='haveActiveQuestion()' :question='this.getActiveQuestion()' :onAnswer='this.onUserAnswer'/>
+      <div v-else>Loading...</div>
+    </div>
+    <div v-else>
+      <h2>Game over!</h2>
+      <a href="#" @click.prevent='resetGame'>Play again?</a>
+    </div>
   </div>
 </template>
 
@@ -64,8 +70,19 @@
       },
       doOnIncorrectAnswer() {
         console.log('Incorrect...')
-//        this.$store.commit('addPoints', -1)
         this.$store.commit('addIncorrectAnswer')
+        if (this.$store.state.incorrectAnsweredCount > this.$store.state.amountOfIncorrectAnswersBeforeGameOver) {
+          this.doGameOver('You ran out of incorrect answers!')
+        } else {
+          this.doRound()
+        }
+      },
+      doGameOver(msg) {
+        this.$store.commit('gameOver', msg)
+      },
+      resetGame() {
+        console.log('Reset game!')
+        this.$store.commit('resetState')
         this.doRound()
       }
     }
