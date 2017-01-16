@@ -17,9 +17,16 @@ const getInitialState = () => {
 const state = getInitialState()
 
 const formatChoices = (q) => {
-  const choices = q.incorrectAnswers
-  choices.push(q.correctAnswer)
+  const choices = q.incorrectAnswers.map(unescapeCrap)
+  choices.push(unescapeCrap(q.correctAnswer))
   return shuffleArray(choices)
+}
+
+const unescapeCrap = (string) => {
+  return string
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, '"')
+    .replace(/&#039;/g, "'")
 }
 
 const shuffleArray = (array) => {
@@ -36,6 +43,7 @@ const mutations = {
   setActiveQuestion(state, q) {
     q.correctAnswer = q.answers.correctAnswer
     q.answers = formatChoices(q.answers)
+    q.question = unescapeCrap(q.question)
     state.activeQuestion = q
   },
   addPoints(state, pointsToAdd) {
