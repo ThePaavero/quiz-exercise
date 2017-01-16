@@ -57,6 +57,7 @@ const processUserAnswer = (q, correctAnswer, userAnswer) => {
   } else {
     doOnIncorrectAnswer(q)
   }
+  console.log('\n************\n')
 }
 
 const doOnCorrectAnswer = (q) => {
