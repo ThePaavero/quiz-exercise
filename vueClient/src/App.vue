@@ -81,14 +81,14 @@
         return userAnswer === this.$store.state.activeQuestion.correctAnswer
       },
       doOnCorrectAnswer() {
-        this.FlashBodyClass('correct')
+        this.flashBodyClass('correct')
         console.log('Correct!')
         this.$store.commit('addPoints', 1)
         this.$store.commit('addCorrectAnswer')
         this.doRound()
       },
       doOnIncorrectAnswer() {
-        this.FlashBodyClass('incorrect')
+        this.flashBodyClass('incorrect')
         console.log('Incorrect...')
         this.$store.commit('addIncorrectAnswer')
         if (this.$store.state.incorrectAnsweredCount > this.$store.state.amountOfIncorrectAnswersBeforeGameOver) {
@@ -97,7 +97,7 @@
           this.doRound()
         }
       },
-      FlashBodyClass(className) {
+      flashBodyClass(className) {
         document.body.classList.add(className)
         setTimeout(() => {
           document.body.classList.remove(className)
