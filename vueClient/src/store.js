@@ -12,8 +12,8 @@ const getInitialState = () => {
     roundsPlayed: 0,
     correctAnsweredCount: 0,
     incorrectAnsweredCount: 0,
-    amountOfIncorrectAnswersBeforeGameOver: 5,
-    secondsToAnswer: 30
+    amountOfIncorrectAnswersBeforeGameOver: 15,
+    secondsToAnswer: 40
   }
 }
 
@@ -60,6 +60,7 @@ const mutations = {
     saveStateToDisk(state)
   },
   resetState(state) {
+    window.localStorage.removeItem('quizSecondsLeft')
     Object.assign(state, getInitialState())
     saveStateToDisk(state)
   },
