@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Helpers from './Helpers'
+import Disk from './lib/StateOnDisk'
 
 Vue.use(Vuex)
 
@@ -17,17 +18,7 @@ const getInitialState = () => {
   }
 }
 
-const saveStateToDisk = (state) => {
-  window.localStorage.setItem('quizState', JSON.stringify(state))
-  console.log('Saved state to localStorage')
-}
-
-const getStateFromDisk = () => {
-  const onDisk = window.localStorage.getItem('quizState')
-  return onDisk ? JSON.parse(onDisk) : null
-}
-
-const state = getStateFromDisk() || getInitialState()
+const state = Disk.getStateFromDisk() || getInitialState()
 
 const mutations = {
   setActiveQuestion(state, q) {
@@ -35,34 +26,36 @@ const mutations = {
     q.answers = Helpers.formatChoices(q.answers)
     q.question = Helpers.unescapeCrap(q.question)
     state.activeQuestion = q
-    saveStateToDisk(state)
+    Disk.saveStateToDisk(state)
   },
   addPoints(state, pointsToAdd) {
     state.points += pointsToAdd
-    saveStateToDisk(state)
+    Disk.saveStateToDisk(state)
   },
   addIncorrectAnswer(state) {
     state.incorrectAnsweredCount++
     state.activeQuestion = null
-    saveStateToDisk(state)
+    Disk.saveStateToDisk(state)
   },
   addCorrectAnswer(state) {
     state.correctAnsweredCount++
     state.activeQuestion = null
-    saveStateToDisk(state)
+    Disk.saveStateToDisk(state)
   },
   gameOver(state, msg) {
     state.gameIsOn = false
-    saveStateToDisk(state)
+    Disk.saveStateToDisk(state)
   },
   removeActiveQuestion(state) {
     state.activeQuestion = null
-    saveStateToDisk(state)
+    Disk.saveStateToDisk(state)
   },
   resetState(state) {
-    window.localStorage.removeItem('quizSecondsLeft')
-    Object.assign(state, getInitialState())
-    saveStateToDisk(state)
+    const initial = getInitialState()
+    console.log(initial)
+    window.localStorage.setItem('quizSecondsLeft', initial.secondsToAnswer)
+    Object.assign(state, initial)
+    Disk.saveStateToDisk(state)
   },
   adjustSecondsToAnswer(state) {
     state.secondsToAnswer -= state.correctAnsweredCount
