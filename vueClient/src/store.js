@@ -52,8 +52,6 @@ const mutations = {
   },
   resetState(state) {
     const initial = getInitialState()
-    console.log(initial)
-    window.localStorage.setItem('quizSecondsLeft', initial.secondsToAnswer)
     Object.assign(state, initial)
     Disk.saveStateToDisk(state)
   },
@@ -67,7 +65,8 @@ const mutations = {
 
 const getters = {
   getSecondsLeftFromDisk() {
-    return window.localStorage.getItem('quizSecondsLeft') || null
+    // return window.localStorage.getItem('quizSecondsLeft') || null
+    return null
   }
 }
 
