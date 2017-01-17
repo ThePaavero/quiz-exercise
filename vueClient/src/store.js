@@ -66,9 +66,19 @@ const mutations = {
   adjustSecondsToAnswer(state) {
     state.secondsToAnswer -= state.correctAnsweredCount
   },
+  saveSecondsLeftToDisk(state, seconds) {
+    window.localStorage.setItem('quizSecondsLeft', seconds)
+  }
+}
+
+const getters = {
+  getSecondsLeftFromDisk() {
+    return window.localStorage.getItem('quizSecondsLeft') || null
+  }
 }
 
 export default new Vuex.Store({
   state,
-  mutations
+  mutations,
+  getters
 })

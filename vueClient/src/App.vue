@@ -6,7 +6,7 @@
       <Question
         v-if='haveActiveQuestion()'
         :question='this.getActiveQuestion()'
-        :secondsToAnswer='this.$store.state.secondsToAnswer'
+        :secondsToAnswer='this.getSecondsToAnswer()'
         :doOnTimeOut='this.onQuestionTimeOut'
         :doOnSecondTick='this.doOnSecondTick'
         :onAnswer='this.onUserAnswer'/>
@@ -50,6 +50,9 @@
       this.doRound()
     },
     methods: {
+      getSecondsToAnswer() {
+        return this.$store.getters.getSecondsLeftFromDisk || this.$store.state.secondsToAnswer
+      },
       doRound() {
         if (this.$store.state.activeQuestion) {
           console.log('Already have session')
@@ -62,7 +65,7 @@
         })
       },
       doOnSecondTick(secondsLeftOnActiveQuestion) {
-        console.log(secondsLeftOnActiveQuestion)
+        this.$store.commit('saveSecondsLeftToDisk', secondsLeftOnActiveQuestion)
       },
       haveActiveQuestion() {
         return this.$store.state.activeQuestion
