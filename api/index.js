@@ -3,6 +3,7 @@ const app = express()
 const DataStore = require('nedb')
 
 let amountOfQuestions = 0
+let data = null
 
 const db = new DataStore({
   filename: '../data',
@@ -24,25 +25,25 @@ app.use((req, res, next) => {
 
 const init = () => {
   console.log('Counting questions...')
-  countDocumentAmount().then((count) => {
-    console.log('Done. We have ' + count + ' questions.')
-    amountOfQuestions = count
+  loadDocuments().then((docs) => {
+    data = docs
+    amountOfQuestions = data.length
+    console.log('Done. We have ' + amountOfQuestions + ' questions.')
   })
 }
 
 const getRandomQuestion = () => {
+  const index = Math.round(Math.random() * amountOfQuestions)
+  console.log('Returning question with random index ' + index + '')
   return new Promise((resolve) => {
-    const index = Math.random() * amountOfQuestions
-    db.findOne({}).skip(index).exec((err, doc) => {
-      resolve(doc)
-    })
+    resolve(data[index])
   })
 }
 
-const countDocumentAmount = () => {
+const loadDocuments = () => {
   return new Promise((resolve) => {
-    amountOfQuestions = db.count({}, (err, count) => {
-      resolve(count)
+    amountOfQuestions = db.find({}, (err, docs) => {
+      resolve(docs)
     })
   })
 }
