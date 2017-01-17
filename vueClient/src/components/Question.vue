@@ -10,7 +10,7 @@
 </template>
 <script>
   export default {
-    props: ['question', 'onAnswer', 'secondsToAnswer', 'doOnTimeOut'],
+    props: ['question', 'onAnswer', 'secondsToAnswer', 'doOnTimeOut', 'doOnSecondTick'],
     data() {
       return {
         secondsLeft: this.secondsToAnswer,
@@ -31,6 +31,7 @@
       startTimer() {
         this.timer = setInterval(() => {
           this.secondsLeft--
+          this.doOnSecondTick(this.secondsLeft)
           if (this.secondsLeft < 1) {
             this.doOnTimeOut()
           }

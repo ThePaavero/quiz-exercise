@@ -8,11 +8,13 @@
         :question='this.getActiveQuestion()'
         :secondsToAnswer='this.$store.state.secondsToAnswer'
         :doOnTimeOut='this.onQuestionTimeOut'
+        :doOnSecondTick='this.doOnSecondTick'
         :onAnswer='this.onUserAnswer'/>
       <div v-else>Loading...</div>
     </div>
     <div v-else>
       <h2>Game over!</h2>
+      <p>You scored: {{ this.$store.state.points }}</p>
       <a href="#" @click.prevent='resetGame'>Play again?</a>
     </div>
     <a href="#" @click.prevent='resetGame'>Clear session</a>
@@ -25,7 +27,7 @@
   import Helpers from './Helpers'
   import axios from 'axios'
 
-  const apiUrl = 'http://paavero.com:666/get-random-question'
+  const apiUrl = 'http://localhost:666/get-random-question'
 
   const getQuestion = () => {
     return new Promise((resolve, reject) => {
@@ -49,11 +51,18 @@
     },
     methods: {
       doRound() {
+        if (this.$store.state.activeQuestion) {
+          console.log('Already have session')
+          return
+        }
         getQuestion().then((q) => {
           this.$store.commit('setActiveQuestion', q)
         }).catch((err) => {
           window.alert(err)
         })
+      },
+      doOnSecondTick(secondsLeftOnActiveQuestion) {
+        console.log(secondsLeftOnActiveQuestion)
       },
       haveActiveQuestion() {
         return this.$store.state.activeQuestion
